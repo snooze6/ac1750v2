@@ -78,6 +78,35 @@ block detect > /etc/config/fstab; \
 reboot
 ```
 
+## Installing things
+
+```bash
+opkg install nmap tcpdump python python-pip screen zsh curl ca-certificates wget git-http nano node openssh-sftp-server
+echo $TERM
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+```
+
+```bash
+opkg install openvpn-openssl openvpn-easy-rsa
+build-ca
+build-dh
+build-key-server my-server
+build-key-pkcs12 my-client
+```
+
+To create a new screen with the name foo, use
+
+```bash
+screen -S foo
+```
+
+Then to reattach it, run
+
+```bash
+screen -r foo  # or use -x, as in
+screen -x foo  # for "Multi display mode" (see the man page)
+```
+
 ![3.PNG](3.PNG)
 
 ## Anexes:
