@@ -43,6 +43,43 @@ Now that we are in a previous version of the firmware which it's not locked we c
 
 Now we'll run out of space pretty soon because of the limited memory of the router, the answer might be using a external usb as storage to gain more free space.
 
+```bash
+opkg install kmod-usb-storage kmod-scsi-core kmod-fs-msdos kmod-fs-vfat block-mount usbutils kmod-usb-core kmod-usb2 file kmod-nls-iso8859-1 kmod-nls-cp437 kmod-fs-ext4
+```
+With the previous packages we can see now /dev/sda1 and mount it
+
+```bash
+mkdir /mnt/sda1
+mount /dev/sda1 /mnt/sda1
+
+df
+Filesystem           1K-blocks      Used Available Use% Mounted on
+rootfs                   12544      4956      7588  40% /
+/dev/root                 2560      2560         0 100% /rom
+tmpfs                    63020       332     62688   1% /tmp
+/dev/mtdblock3           12544      4956      7588  40% /overlay
+overlayfs:/overlay       12544      4956      7588  40% /
+tmpfs                      512         0       512   0% /dev
+/dev/sda1             15318416     38144  14482424   0% /mnt/sda1
+```
+
+Checking the mount command
+
+```bash
+# Prepare external storage root
+mount /dev/sda1 /mnt ; tar -C /overlay -cvf - . | tar -C /mnt -xf - ; umount /mnt
+
+# Create fstab
+block detect > /etc/config/fstab; \
+   sed -i s/option$'\t'enabled$'\t'\'0\'/option$'\t'enabled$'\t'\'1\'/ /etc/config/fstab; \
+   sed -i s#/mnt/sda1#/overlay# /etc/config/fstab; \
+   cat /etc/config/fstab;
+
+reboot
+```
+
+
+
 ## Anexes:
 
 * Non locked firmware
