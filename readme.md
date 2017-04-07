@@ -78,7 +78,7 @@ block detect > /etc/config/fstab; \
 reboot
 ```
 
-
+![3.PNG](3.PNG)
 
 ## Anexes:
 
