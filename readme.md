@@ -116,6 +116,9 @@ build-ca
 build-dh # Takes time, soo many time...
 build-key-server my-server
 build-key-pkcs12 my-client
+
+cp /etc/easy-rsa/keys/ca.crt /etc/easy-rsa/keys/my-server.* /etc/easy-rsa/keys/dh2048.pem /etc/openvpn
+scp /etc/easy-rsa/keys/ca.crt /etc/easy-rsa/keys/my-client.* root@CLIENT_IP_ADDRESS:/etc/openvpn
 ```
 Configuring network
 
@@ -161,6 +164,29 @@ uci commit openvpn
 # Commit
 /etc/init.d/openvpn enable
 /etc/init.d/openvpn start
+```
+Seeing that everything is OK:
+```bash
+ps w | grep vpn # Proceso
+cat  /var/run/openvpn.myvpn.status
+netstat -tupln # Port 1194 openvpn
+sudo nmap -p 1194 <IP> -sU
+```
+In the client you must create the openvpn config with the certificates to get it to work.
+```
+dev tap
+proto udp
+
+log openvpn.log
+verb 3
+
+ca /etc/openvpn/ca.crt
+cert /etc/openvpn/my-client.crt
+key /etc/openvpn/my-client.key
+
+client
+remote-cert-tls server
+remote 91.117.49.137 1194
 ```
 
 ![3.PNG](3.PNG)
