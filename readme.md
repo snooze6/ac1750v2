@@ -78,6 +78,8 @@ block detect > /etc/config/fstab; \
 reboot
 ```
 
+![3.PNG](3.PNG)
+
 ## Installing things
 
 ```bash
@@ -188,8 +190,6 @@ client
 remote-cert-tls server
 remote 91.117.49.137 1194
 ```
-
-![3.PNG](3.PNG)
 
 ## Anexes:
 
