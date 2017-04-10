@@ -86,13 +86,7 @@ echo $TERM
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 ```
 
-```bash
-opkg install openvpn-openssl openvpn-easy-rsa
-build-ca
-build-dh
-build-key-server my-server
-build-key-pkcs12 my-client
-```
+### Screen
 
 To create a new screen with the name foo, use
 
@@ -105,6 +99,66 @@ Then to reattach it, run
 ```bash
 screen -r foo  # or use -x, as in
 screen -x foo  # for "Multi display mode" (see the man page)
+# Delete session
+ screen -X -S <id> quit
+```
+
+### OpenVPN
+
+We want a bridge-network so let's go for it:
+
+```bash
+# Setup keys
+opkg install openvpn-openssl openvpn-easy-rsa
+build-ca
+build-dh # Takes time, soo many time...
+build-key-server my-server
+build-key-pkcs12 my-client
+```
+Configuring network
+
+```bash
+# Creating vpn0 interface
+uci set network.vpn0=interface
+uci set network.vpn0.ifname=tap0
+uci set network.vpn0.proto=none
+uci set network.vpn0.auto=1
+# Lan bridge
+uci set network.lan.ifname="$(uci get network.lan.ifname) tap0"
+# VPN Rule
+uci set firewall.Allow_OpenVPN_Inbound=rule
+uci set firewall.Allow_OpenVPN_Inbound.target=ACCEPT
+uci set firewall.Allow_OpenVPN_Inbound.src=*
+uci set firewall.Allow_OpenVPN_Inbound.proto=udp
+uci set firewall.Allow_OpenVPN_Inbound.dest_port=1194
+# Commit
+uci commit network
+/etc/init.d/network reload
+uci commit firewall
+/etc/init.d/firewall reload
+```
+Now Configure VPN
+
+```bash
+echo > /etc/config/openvpn # clear the openvpn uci config
+uci set openvpn.myvpn=openvpn
+uci set openvpn.myvpn.enabled=1
+uci set openvpn.myvpn.verb=3
+uci set openvpn.myvpn.proto=udp
+uci set openvpn.myvpn.port=1194
+uci set openvpn.myvpn.dev=tap
+uci set openvpn.myvpn.mode=server
+uci set openvpn.myvpn.tls_server=1
+uci add_list openvpn.myvpn.push='route-gateway dhcp'
+uci set openvpn.myvpn.keepalive='10 120'
+uci set openvpn.myvpn.ca=/etc/openvpn/ca.crt
+uci set openvpn.myvpn.cert=/etc/openvpn/my-server.crt
+uci set openvpn.myvpn.key=/etc/openvpn/my-server.key
+uci set openvpn.myvpn.dh=/etc/openvpn/dh2048.pem
+uci commit openvpn
+# Commit
+/etc/init.d/openvpn enable
+/etc/init.d/openvpn start
 ```
 
 ![3.PNG](3.PNG)
