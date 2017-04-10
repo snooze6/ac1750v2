@@ -83,6 +83,8 @@ reboot
 ```bash
 opkg install nmap tcpdump python python-pip screen zsh curl ca-certificates wget git-http nano node openssh-sftp-server
 echo $TERM
+# Cygwin terminal can cause problems
+export TERM=xterm-256color
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 ```
 
@@ -109,7 +111,7 @@ We want a bridge-network so let's go for it:
 
 ```bash
 # Setup keys
-opkg install openvpn-openssl openvpn-easy-rsa
+opkg install openvpn-openssl openvpn-easy-rsa luci-app-openvpn
 build-ca
 build-dh # Takes time, soo many time...
 build-key-server my-server
