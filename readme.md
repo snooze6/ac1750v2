@@ -107,6 +107,20 @@ screen -x foo  # for "Multi display mode" (see the man page)
  screen -X -S <id> quit
 ```
 
+###  DHCP and DNS
+
+To see the leases we can do it through the web or by doing:
+```bash
+cat /tmp/dhcp.leases
+cat /tmp/resolv.conf.auto # See DNS
+```
+We can setup hostnames and IPs using the web interface
+
+Normal DHCP behaviour is this:
+1. Lease is given a lease time perhaps 7days.
+2. Client machine starts requesting a new lease half way through the current lease period.
+3. Client machine only stops using the IP address when it either gets a new lease from the same DHCP server or the lease has expired.
+
 ### OpenVPN
 
 We want a bridge-network so let's go for it:
@@ -190,6 +204,15 @@ client
 remote-cert-tls server
 remote 91.117.49.137 1194
 ```
+
+### Upgrading all system
+
+OpenWRT does not have a command for this.
+
+```bash
+opkg list-upgradable | awk -F ‘ – ‘ ‘{print $1}’ | xargs -r opkg upgrade
+```
+Does this work?
 
 ## Anexes:
 
