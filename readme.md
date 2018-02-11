@@ -83,7 +83,7 @@ reboot
 ## Installing things
 
 ```bash
-opkg install nmap tcpdump python python-pip screen zsh curl ca-certificates wget git-http nano node openssh-sftp-server
+opkg install nmap tcpdump python python-pip screen zsh curl ca-certificates wget git-http nano node openssh-sftp-server iperf
 echo $TERM
 # Cygwin terminal can cause problems
 export TERM=xterm-256color
