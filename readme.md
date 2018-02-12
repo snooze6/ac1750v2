@@ -113,6 +113,9 @@ To see the leases we can do it through the web or by doing:
 ```bash
 cat /tmp/dhcp.leases
 cat /tmp/resolv.conf.auto # See DNS
+
+uci set system.@system[0].hostname=router
+uci commit
 ```
 We can setup hostnames and IPs using the web interface
 
